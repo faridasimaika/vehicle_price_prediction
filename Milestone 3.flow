@@ -1,0 +1,137 @@
+{
+  "version": "1.0.0",
+  "cells": [
+    {
+      "type": "cs",
+      "input": "assist"
+    },
+    {
+      "type": "cs",
+      "input": ""
+    },
+    {
+      "type": "cs",
+      "input": "setupParse source_frames: [ \"df_filtered.csv\"]"
+    },
+    {
+      "type": "cs",
+      "input": "parseFiles\n  source_frames: [\"df_filtered.csv\"]\n  destination_frame: \"Key_Frame__df_filtered1.hex\"\n  parse_type: \"CSV\"\n  separator: 44\n  number_columns: 17\n  single_quotes: false\n  column_names: [\"year\",\"make\",\"model\",\"trim\",\"body\",\"transmission\",\"state\",\"condition\",\"odometer\",\"color\",\"interior\",\"seller\",\"mmr\",\"sellingprice\",\"saledate\",\"day_of_week\",\"month\"]\n  column_types: [\"Numeric\",\"Enum\",\"Enum\",\"Enum\",\"Enum\",\"Enum\",\"Enum\",\"Numeric\",\"Numeric\",\"Enum\",\"Enum\",\"Enum\",\"Numeric\",\"Numeric\",\"Enum\",\"Numeric\",\"Numeric\"]\n  delete_on_done: true\n  check_header: 1\n  chunk_size: 4194304\n  escapechar: undefined"
+    },
+    {
+      "type": "cs",
+      "input": "getFrameSummary \"Key_Frame__df_filtered1.hex\""
+    },
+    {
+      "type": "cs",
+      "input": "assist splitFrame, \"Key_Frame__df_filtered1.hex\""
+    },
+    {
+      "type": "cs",
+      "input": "splitFrame \"Key_Frame__df_filtered1.hex\", [0.8], [\"Key_Frame__df_filtered1.hex_0.80\",\"Key_Frame__df_filtered1.hex_0.20\"], 335437"
+    },
+    {
+      "type": "cs",
+      "input": ""
+    },
+    {
+      "type": "cs",
+      "input": "buildModel \"gbm\""
+    },
+    {
+      "type": "cs",
+      "input": "buildModel 'gbm', {\"model_id\":\"gbm-20e2c440-89ac-4b39-a14e-ecd664a6455e\",\"training_frame\":\"Key_Frame__df_filtered1.hex_0.80\",\"validation_frame\":\"Key_Frame__df_filtered1.hex_0.20\",\"nfolds\":0,\"response_column\":\"sellingprice\",\"ignored_columns\":[],\"ignore_const_cols\":true,\"ntrees\":50,\"max_depth\":5,\"min_rows\":10,\"nbins\":20,\"seed\":-1,\"learn_rate\":0.1,\"sample_rate\":1,\"col_sample_rate\":1,\"score_each_iteration\":false,\"score_tree_interval\":0,\"nbins_top_level\":1024,\"nbins_cats\":1024,\"r2_stopping\":1.7976931348623157e+308,\"stopping_rounds\":0,\"stopping_metric\":\"AUTO\",\"stopping_tolerance\":0.001,\"max_runtime_secs\":0,\"learn_rate_annealing\":1,\"distribution\":\"AUTO\",\"huber_alpha\":0.9,\"col_sample_rate_per_tree\":1,\"min_split_improvement\":0.00001,\"histogram_type\":\"AUTO\",\"categorical_encoding\":\"AUTO\",\"monotone_constraints\":[],\"gainslift_bins\":-1,\"auc_type\":\"AUTO\",\"build_tree_one_node\":false,\"sample_rate_per_class\":[],\"col_sample_rate_change_per_level\":1,\"max_abs_leafnode_pred\":1.7976931348623157e+308,\"pred_noise_bandwidth\":0,\"calibrate_model\":false,\"calibration_method\":\"AUTO\",\"in_training_checkpoints_tree_interval\":1,\"check_constant_response\":true}"
+    },
+    {
+      "type": "cs",
+      "input": "getModel \"gbm-20e2c440-89ac-4b39-a14e-ecd664a6455e\""
+    },
+    {
+      "type": "cs",
+      "input": "predict model: \"gbm-20e2c440-89ac-4b39-a14e-ecd664a6455e\""
+    },
+    {
+      "type": "cs",
+      "input": "predict model: \"gbm-20e2c440-89ac-4b39-a14e-ecd664a6455e\", frame: \"Key_Frame__df_filtered1.hex_0.20\", predictions_frame: \"prediction-0e7bd2e5-0259-4874-91f1-c56cea4dab58\""
+    },
+    {
+      "type": "cs",
+      "input": "bindFrames \"combined-prediction-0e7bd2e5-0259-4874-91f1-c56cea4dab58\", [ \"prediction-0e7bd2e5-0259-4874-91f1-c56cea4dab58\", \"Key_Frame__df_filtered1.hex_0.20\" ]"
+    },
+    {
+      "type": "cs",
+      "input": "getFrameSummary \"combined-prediction-0e7bd2e5-0259-4874-91f1-c56cea4dab58\""
+    },
+    {
+      "type": "cs",
+      "input": ""
+    },
+    {
+      "type": "cs",
+      "input": "buildModel \"drf\""
+    },
+    {
+      "type": "cs",
+      "input": "buildModel 'drf', {\"model_id\":\"drf-abe339f4-2ba5-4a73-93e5-d671d3309955\",\"training_frame\":\"Key_Frame__df_filtered1.hex_0.80\",\"validation_frame\":\"Key_Frame__df_filtered1.hex_0.20\",\"nfolds\":0,\"response_column\":\"sellingprice\",\"ignored_columns\":[],\"ignore_const_cols\":true,\"ntrees\":50,\"max_depth\":20,\"min_rows\":1,\"nbins\":20,\"seed\":-1,\"mtries\":-1,\"sample_rate\":0.632,\"score_each_iteration\":false,\"score_tree_interval\":0,\"nbins_top_level\":1024,\"nbins_cats\":1024,\"r2_stopping\":1.7976931348623157e+308,\"stopping_rounds\":0,\"stopping_metric\":\"AUTO\",\"stopping_tolerance\":0.001,\"max_runtime_secs\":0,\"col_sample_rate_per_tree\":1,\"min_split_improvement\":0.00001,\"histogram_type\":\"AUTO\",\"categorical_encoding\":\"AUTO\",\"distribution\":\"AUTO\",\"gainslift_bins\":-1,\"auc_type\":\"AUTO\",\"build_tree_one_node\":false,\"sample_rate_per_class\":[],\"binomial_double_trees\":false,\"col_sample_rate_change_per_level\":1,\"calibrate_model\":false,\"calibration_method\":\"AUTO\",\"check_constant_response\":true}"
+    },
+    {
+      "type": "cs",
+      "input": "getModel \"drf-abe339f4-2ba5-4a73-93e5-d671d3309955\""
+    },
+    {
+      "type": "cs",
+      "input": "predict model: \"drf-abe339f4-2ba5-4a73-93e5-d671d3309955\""
+    },
+    {
+      "type": "cs",
+      "input": "predict model: \"drf-abe339f4-2ba5-4a73-93e5-d671d3309955\", frame: \"Key_Frame__df_filtered1.hex_0.20\", predictions_frame: \"prediction-d5b05a54-a35b-4be0-bbf9-b34499f3323f\""
+    },
+    {
+      "type": "cs",
+      "input": ""
+    },
+    {
+      "type": "cs",
+      "input": "buildModel \"kmeans\""
+    },
+    {
+      "type": "cs",
+      "input": "buildModel 'kmeans', {\"model_id\":\"kmeans-cca054fa-396b-42b9-bdd8-e813866e9a97\",\"training_frame\":\"Key_Frame__df_filtered1.hex_0.80\",\"validation_frame\":\"Key_Frame__df_filtered1.hex_0.20\",\"nfolds\":0,\"ignored_columns\":[],\"ignore_const_cols\":true,\"k\":1,\"estimate_k\":false,\"max_iterations\":10,\"standardize\":true,\"init\":\"Furthest\",\"score_each_iteration\":false,\"seed\":-1,\"max_runtime_secs\":0,\"categorical_encoding\":\"AUTO\",\"cluster_size_constraints\":[]}"
+    },
+    {
+      "type": "cs",
+      "input": "getModel \"kmeans-cca054fa-396b-42b9-bdd8-e813866e9a97\""
+    },
+    {
+      "type": "cs",
+      "input": "predict model: \"kmeans-cca054fa-396b-42b9-bdd8-e813866e9a97\""
+    },
+    {
+      "type": "cs",
+      "input": "predict model: \"kmeans-cca054fa-396b-42b9-bdd8-e813866e9a97\", frame: \"Key_Frame__df_filtered1.hex_0.20\", predictions_frame: \"prediction-276734c7-e0b6-479f-b06a-ce12eadc0ba6\""
+    },
+    {
+      "type": "cs",
+      "input": "bindFrames \"combined-prediction-276734c7-e0b6-479f-b06a-ce12eadc0ba6\", [ \"prediction-276734c7-e0b6-479f-b06a-ce12eadc0ba6\", \"Key_Frame__df_filtered1.hex_0.20\" ]"
+    },
+    {
+      "type": "cs",
+      "input": "getFrameSummary \"combined-prediction-276734c7-e0b6-479f-b06a-ce12eadc0ba6\""
+    },
+    {
+      "type": "cs",
+      "input": ""
+    },
+    {
+      "type": "cs",
+      "input": "buildModel \"glm\""
+    },
+    {
+      "type": "cs",
+      "input": "buildModel 'glm', {\"model_id\":\"glm-5dca490c-8539-4b93-aaf6-3bbf5de9592c\",\"training_frame\":\"Key_Frame__df_filtered1.hex_0.80\",\"validation_frame\":\"Key_Frame__df_filtered1.hex_0.20\",\"nfolds\":5,\"seed\":-1,\"response_column\":\"sellingprice\",\"ignored_columns\":[],\"random_columns\":[],\"ignore_const_cols\":true,\"family\":\"AUTO\",\"rand_family\":[],\"solver\":\"AUTO\",\"alpha\":[],\"lambda\":[],\"lambda_search\":false,\"standardize\":true,\"non_negative\":false,\"startval\":[],\"calc_like\":false,\"HGLM\":false,\"cold_start\":false,\"obj_reg\":-1,\"fold_assignment\":\"AUTO\",\"score_each_iteration\":false,\"score_iteration_interval\":-1,\"compute_p_values\":false,\"dispersion_parameter_method\":\"pearson\",\"remove_collinear_columns\":false,\"max_iterations\":-1,\"link\":\"family_default\",\"rand_link\":[],\"stopping_rounds\":0,\"stopping_metric\":\"AUTO\",\"stopping_tolerance\":0.001,\"max_runtime_secs\":0,\"generate_scoring_history\":false,\"auc_type\":\"AUTO\",\"dispersion_epsilon\":0.0001,\"tweedie_epsilon\":8e-17,\"max_iterations_dispersion\":3000,\"fix_tweedie_variance_power\":true,\"keep_cross_validation_models\":true,\"keep_cross_validation_predictions\":false,\"keep_cross_validation_fold_assignment\":false,\"missing_values_handling\":\"MeanImputation\",\"init_dispersion_parameter\":1,\"intercept\":true,\"objective_epsilon\":-1,\"beta_epsilon\":0.0001,\"gradient_epsilon\":-1,\"prior\":-1,\"max_active_predictors\":-1,\"interactions\":[],\"interaction_pairs\":[],\"build_null_model\":false,\"fix_dispersion_parameter\":false,\"generate_variable_inflation_factors\":false,\"dispersion_learning_rate\":0.5}"
+    },
+    {
+      "type": "cs",
+      "input": "getModel \"glm-5dca490c-8539-4b93-aaf6-3bbf5de9592c\""
+    }
+  ]
+}
